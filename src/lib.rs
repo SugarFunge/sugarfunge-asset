@@ -738,6 +738,10 @@ pub mod pallet {
             Ok(balances)
         }
 
+        pub fn verify_class_id_(class_id: T::ClassId) -> bool {
+            return Classes::<T>::contains_key(class_id);
+        }
+
         fn add_balance_to(
             to: &T::AccountId,
             class_id: T::ClassId,
