@@ -9,14 +9,14 @@ pub fn test_create_class() {
 fn test_verify_class_id_successful() {
     new_test_ext().execute_with(|| {
         test_create_class();
-        assert_eq!(Asset::verify_class_id_(2000), true);
+        assert_eq!(Asset::class_exists(2000), true);
     })
 }
 
 #[test]
 fn test_verify_class_id_not_initialized() {
     new_test_ext().execute_with(|| {
-        assert_eq!(Asset::verify_class_id_(2000), false);
+        assert_eq!(Asset::class_exists(2000), false);
     })
 }
 
@@ -24,6 +24,6 @@ fn test_verify_class_id_not_initialized() {
 fn test_verify_class_id_failed() {
     new_test_ext().execute_with(|| {
         test_create_class();
-        assert_eq!(Asset::verify_class_id_(2001), false);
+        assert_eq!(Asset::class_exists(2001), false);
     })
 }
