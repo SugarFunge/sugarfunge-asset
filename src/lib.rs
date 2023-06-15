@@ -95,9 +95,11 @@ pub mod pallet {
     pub struct Pallet<T>(_);
 
     #[pallet::storage]
+    #[pallet::getter(fn classes)]
     pub(super) type Classes<T: Config> = StorageMap<_, Blake2_128Concat, T::ClassId, ClassOf<T>>;
 
     #[pallet::storage]
+    #[pallet::getter(fn assets)]
     pub(super) type Assets<T: Config> =
         StorageDoubleMap<_, Blake2_128Concat, T::ClassId, Blake2_128, T::AssetId, AssetOf<T>>;
 
@@ -496,6 +498,16 @@ pub mod pallet {
 
         pub fn asset_exists(class_id: T::ClassId, asset_id: T::AssetId) -> bool {
             Assets::<T>::contains_key(class_id, asset_id)
+        }
+
+        pub fn account_is_owner(account: &T::AccountId, class_id: T::ClassId) -> bool {
+            let value = Self::classes(class_id);
+            if let Some(class) = value {
+                if class.owner == account.clone() {
+                    return true;
+                }
+            }
+            return false;
         }
 
         pub fn do_mint(
