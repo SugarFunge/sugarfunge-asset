@@ -17,6 +17,56 @@ use sugarfunge_primitives::Balance;
 
 pub use pallet::*;
 
+pub trait AssetInterface {
+    type AccountId;
+    type AssetId;
+    type ClassId;
+    type Metadata;
+    type Balance;
+
+    fn create_class(
+        who: Self::AccountId,
+        owner: Self::AccountId,
+        class_id: Self::ClassId,
+        metadata: Self::Metadata,
+    ) -> DispatchResult;
+
+    fn mint(
+        who: Self::AccountId,
+        to: Self::AccountId,
+        class_id: Self::ClassId,
+        asset_id: Self::AssetId,
+        amount: Self::Balance,
+    ) -> DispatchResult;
+
+    fn batch_transfer_from(
+        who: Self::AccountId,
+        from: Self::AccountId,
+        to: Self::AccountId,
+        class_id: Self::ClassId,
+        asset_ids: Vec<Self::AssetId>,
+        amounts: Vec<Self::Balance>,
+    ) -> DispatchResult;
+
+    fn burn(
+        who: Self::AccountId,
+        from: Self::AccountId,
+        class_id: Self::ClassId,
+        asset_id: Self::AssetId,
+        amount: Self::Balance,
+    ) -> DispatchResult;
+
+    fn balance_of(
+        owner: Self::AccountId,
+        class_id: Self::ClassId,
+        asset_id: Self::AssetId,
+    ) -> Self::Balance;
+
+    fn balances_of_owner(
+        owner: Self::AccountId,
+    ) -> Result<Vec<(Self::ClassId, Self::AssetId, Self::Balance)>, DispatchError>;
+}
+
 #[cfg(test)]
 mod mock;
 
@@ -791,6 +841,68 @@ pub mod pallet {
             let class = Classes::<T>::get(class_id).ok_or(Error::<T>::InvalidClassId)?;
             ensure!(*who == class.owner, Error::<T>::NoPermission);
             Ok(())
+        }
+    }
+
+    impl<T: Config> AssetInterface for Pallet<T> {
+        type AccountId = T::AccountId;
+        type AssetId = T::AssetId;
+        type ClassId = T::ClassId;
+        type Metadata = BoundedVec<u8, <T as Config>::MaxClassMetadata>;
+        type Balance = Balance;
+
+        fn create_class(
+            who: Self::AccountId,
+            owner: Self::AccountId,
+            class_id: Self::ClassId,
+            metadata: Self::Metadata,
+        ) -> DispatchResult {
+            Self::do_create_class(&who, &owner, class_id, metadata)
+        }
+
+        fn mint(
+            who: Self::AccountId,
+            to: Self::AccountId,
+            class_id: Self::ClassId,
+            asset_id: Self::AssetId,
+            amount: Self::Balance,
+        ) -> DispatchResult {
+            Self::do_mint(&who, &to, class_id, asset_id, amount)
+        }
+
+        fn batch_transfer_from(
+            who: Self::AccountId,
+            from: Self::AccountId,
+            to: Self::AccountId,
+            class_id: Self::ClassId,
+            asset_ids: Vec<Self::AssetId>,
+            amounts: Vec<Self::Balance>,
+        ) -> DispatchResult {
+            Self::do_batch_transfer_from(&who, &from, &to, class_id, asset_ids, amounts)
+        }
+
+        fn burn(
+            who: Self::AccountId,
+            from: Self::AccountId,
+            class_id: Self::ClassId,
+            asset_id: Self::AssetId,
+            amount: Self::Balance,
+        ) -> DispatchResult {
+            Self::do_burn(&who, &from, class_id, asset_id, amount)
+        }
+
+        fn balance_of(
+            owner: Self::AccountId,
+            class_id: Self::ClassId,
+            asset_id: Self::AssetId,
+        ) -> Self::Balance {
+            Self::balance_of(&owner, class_id, asset_id)
+        }
+
+        fn balances_of_owner(
+            owner: Self::AccountId,
+        ) -> Result<Vec<(Self::ClassId, Self::AssetId, Self::Balance)>, DispatchError> {
+            Self::balances_of_owner(&owner)
         }
     }
 }
