@@ -2,6 +2,7 @@
 
 use codec::EncodeLike;
 use codec::{Decode, Encode, HasCompact, MaxEncodedLen};
+use core::iter::Sum;
 use frame_support::{
     dispatch::{DispatchError, DispatchResult},
     ensure,
