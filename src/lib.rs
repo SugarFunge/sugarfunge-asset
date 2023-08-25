@@ -1,5 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+use codec::EncodeLike;
 use codec::{Decode, Encode, HasCompact, MaxEncodedLen};
 use frame_support::{
     dispatch::{DispatchError, DispatchResult},
@@ -12,6 +13,7 @@ use sp_runtime::{
     traits::{AtLeast32BitUnsigned, One, Zero},
     RuntimeDebug,
 };
+use sp_std::fmt::Debug;
 use sp_std::prelude::*;
 use sugarfunge_primitives::Balance;
 
@@ -19,10 +21,10 @@ pub use pallet::*;
 
 pub trait AssetInterface {
     type AccountId;
-    type AssetId;
-    type ClassId;
-    type Metadata;
-    type Balance;
+    type AssetId: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
+    type ClassId: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
+    type Metadata: TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
+    type Balance: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
 
     fn create_class(
         who: Self::AccountId,
