@@ -21,9 +21,27 @@ pub use pallet::*;
 
 pub trait AssetInterface {
     type AccountId;
-    type AssetId: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
-    type ClassId: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
-    type Metadata: TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
+    type AssetId: Copy
+        + TypeInfo
+        + Debug
+        + Eq
+        + EncodeLike
+        + Encode
+        + Decode
+        + From<u64>
+        + Into<u64>
+        + MaxEncodedLen;
+    type ClassId: Copy
+        + TypeInfo
+        + Debug
+        + Eq
+        + EncodeLike
+        + Encode
+        + Decode
+        + From<u64>
+        + Into<u64>
+        + MaxEncodedLen;
+    type Metadata: Clone + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
     type Balance: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
 
     fn create_class(
