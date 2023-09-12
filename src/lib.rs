@@ -77,6 +77,15 @@ pub trait AssetInterface {
         amount: Self::Balance,
     ) -> DispatchResult;
 
+    fn transfer_from(
+        who: Self::AccountId,
+        from: Self::AccountId,
+        to: Self::AccountId,
+        class_id: Self::ClassId,
+        asset_id: Self::AssetId,
+        amount: Self::Balance,
+    ) -> DispatchResult;
+
     fn balance_of(
         owner: Self::AccountId,
         class_id: Self::ClassId,
@@ -910,6 +919,17 @@ pub mod pallet {
             amount: Self::Balance,
         ) -> DispatchResult {
             Self::do_burn(&who, &from, class_id, asset_id, amount)
+        }
+
+        fn transfer_from(
+            who: Self::AccountId,
+            from: Self::AccountId,
+            to: Self::AccountId,
+            class_id: Self::ClassId,
+            asset_id: Self::AssetId,
+            amount: Self::Balance,
+        ) -> DispatchResult {
+            Self::do_transfer_from(&who, &from, &to, class_id, asset_id, amount)
         }
 
         fn balance_of(
