@@ -31,7 +31,8 @@ pub trait AssetInterface {
         + Decode
         + From<u64>
         + Into<u64>
-        + MaxEncodedLen;
+        + MaxEncodedLen
+        + Ord;
     type ClassId: Copy
         + TypeInfo
         + Debug
@@ -41,9 +42,10 @@ pub trait AssetInterface {
         + Decode
         + From<u64>
         + Into<u64>
-        + MaxEncodedLen;
+        + MaxEncodedLen
+        + Ord;
     type Metadata: Clone + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
-    type Balance: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode + MaxEncodedLen + Sum + From<u128> + Into<u128>;
+    type Balance: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode + MaxEncodedLen + Sum + From<u128> + Into<u128> + Ord + Zero;
 
     fn create_class(
         who: Self::AccountId,
