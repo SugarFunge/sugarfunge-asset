@@ -20,6 +20,15 @@ use sugarfunge_primitives::Balance;
 
 pub use pallet::*;
 
+#[cfg(test)]
+pub mod mock;
+
+#[cfg(test)]
+mod tests;
+
+#[cfg(feature = "runtime-benchmarks")]
+mod benchmarking;
+
 pub trait AssetInterface {
     type AccountId;
     type AssetId: Copy
@@ -45,7 +54,19 @@ pub trait AssetInterface {
         + MaxEncodedLen
         + Ord;
     type Metadata: Clone + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode;
-    type Balance: Copy + TypeInfo + Debug + Eq + EncodeLike + Encode + Decode + MaxEncodedLen + Sum + From<u128> + Into<u128> + Ord + Zero;
+    type Balance: Copy
+        + TypeInfo
+        + Debug
+        + Eq
+        + EncodeLike
+        + Encode
+        + Decode
+        + MaxEncodedLen
+        + Sum
+        + From<u128>
+        + Into<u128>
+        + Ord
+        + Zero;
 
     fn create_class(
         who: Self::AccountId,
@@ -98,12 +119,6 @@ pub trait AssetInterface {
         owner: Self::AccountId,
     ) -> Result<Vec<(Self::ClassId, Self::AssetId, Self::Balance)>, DispatchError>;
 }
-
-#[cfg(test)]
-mod mock;
-
-#[cfg(test)]
-mod tests;
 
 type BalanceOf<T> =
     <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
