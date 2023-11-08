@@ -17,7 +17,7 @@ sp-runtime = { version = "24.0.0", default-features = false, git = "https://gith
 sp-core = { version = "21.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v1.0.0" }
 sp-std = { version = "8.0.0", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v1.0.0" }
 
-sugarfunge-primitives = { git = "https://github.com/SugarFunge/sugarfunge-primitives", branch = "main", default-features = false }
+sugarfunge-primitives = { git = "https://github.com/SugarFunge/sugarfunge-primitives", branch = "SBP-M1-changes", default-features = false }
 
 [dev-dependencies]
 pallet-balances = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "polkadot-v1.0.0" }
