@@ -4,8 +4,8 @@ use frame_support::{parameter_types, traits::Everything};
 use frame_system as system;
 use sp_core::H256;
 use sp_runtime::{
-    testing::Header,
     traits::{BlakeTwo256, IdentityLookup},
+    BuildStorage,
 };
 use sugarfunge_primitives::Balance;
 
@@ -35,10 +35,10 @@ impl pallet_balances::Config for Test {
     type MaxLocks = ();
     type MaxReserves = ();
     type ReserveIdentifier = [u8; 8];
-    type HoldIdentifier = ();
     type FreezeIdentifier = ();
     type MaxHolds = ();
     type MaxFreezes = ();
+    type RuntimeHoldReason = ();
 }
 
 impl sugarfunge_asset::Config for Test {
@@ -51,19 +51,15 @@ impl sugarfunge_asset::Config for Test {
     type MaxAssetMetadata = MaxAssetMetadata;
 }
 
-type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
 
 // Configure a mock runtime to test the pallet.
 frame_support::construct_runtime!(
-    pub enum Test where
-        Block = Block,
-        NodeBlock = Block,
-        UncheckedExtrinsic = UncheckedExtrinsic,
+    pub enum Test
     {
-        System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
-        Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-        Asset: sugarfunge_asset::{Pallet, Call, Storage, Event<T>},
+        System: frame_system,
+        Balances: pallet_balances,
+        Asset: sugarfunge_asset,
     }
 );
 
@@ -79,13 +75,12 @@ impl system::Config for Test {
     type DbWeight = ();
     type RuntimeOrigin = RuntimeOrigin;
     type RuntimeCall = RuntimeCall;
-    type Index = u64;
-    type BlockNumber = u64;
+    type Nonce = u64;
     type Hash = H256;
     type Hashing = BlakeTwo256;
     type AccountId = u64;
     type Lookup = IdentityLookup<Self::AccountId>;
-    type Header = Header;
+    type Block = Block;
     type RuntimeEvent = RuntimeEvent;
     type BlockHashCount = BlockHashCount;
     type Version = ();
@@ -100,8 +95,8 @@ impl system::Config for Test {
 }
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
-    let mut t = frame_system::GenesisConfig::default()
-        .build_storage::<Test>()
+    let mut t = frame_system::GenesisConfig::<Test>::default()
+        .build_storage()
         .unwrap();
     pallet_balances::GenesisConfig::<Test> {
         balances: vec![(1, 1000000 * DOLLARS), (2, 1000000 * DOLLARS)],
