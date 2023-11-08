@@ -1,3 +1,4 @@
+use crate::mock::Asset;
 use crate::mock::*;
 use frame_support::{assert_ok, bounded_vec};
 
