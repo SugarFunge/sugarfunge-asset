@@ -17,6 +17,7 @@ use sp_runtime::{
 use sp_std::fmt::Debug;
 use sp_std::prelude::*;
 use sugarfunge_primitives::Balance;
+pub use weights::WeightInfo;
 
 pub use pallet::*;
 
@@ -28,6 +29,8 @@ mod tests;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
+
+pub mod weights;
 
 pub trait AssetInterface {
     type AccountId;
@@ -306,7 +309,7 @@ pub mod pallet {
     #[pallet::hooks]
     impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {}
 
-    #[pallet::call]
+    #[pallet::call(weight(<T as Config<I>>::WeightInfo))]
     impl<T: Config> Pallet<T> {
         #[pallet::call_index(0)]
         #[pallet::weight(Weight::from_parts(10_000 as u64, 0))]
